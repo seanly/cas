@@ -8,11 +8,10 @@ package de.triology.cas.ldap;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
-import org.jasig.cas.authentication.principal.Principal;
+import org.apereo.cas.authentication.principal.Principal;
 import org.junit.runner.RunWith;
 import org.ldaptive.LdapEntry;
 import org.mockito.Mock;

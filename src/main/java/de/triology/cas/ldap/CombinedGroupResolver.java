@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.jasig.cas.authentication.principal.Principal;
+import org.apereo.cas.authentication.principal.Principal;
 import org.ldaptive.LdapEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

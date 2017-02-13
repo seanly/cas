@@ -5,22 +5,25 @@
  */
 package de.triology.cas.services;
 
-import org.jasig.cas.authentication.principal.Service;
-import org.jasig.cas.services.RegisteredService;
-import org.jasig.cas.services.ReloadableServicesManager;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import org.apereo.cas.authentication.principal.Service;
+import org.apereo.cas.services.RegisteredService;
+import org.apereo.cas.services.ServicesManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import org.apereo.cas.services.ServicesManager;
 
 /**
  * Manages the Dogus that are accessible via CAS within the Cloudogu Ecosystem.
  * Depending on the {@link CesServicesManagerStage} ({@link CesServicesManagerStageDevelopment} or
  * {@link CesServicesManagerStageProductive}), a number of {@link RegisteredService}s is returned.
  */
-public class CesServicesManager implements ReloadableServicesManager {
+public class CesServicesManager implements ServicesManager {
 
     /**
      * This triggers operation in development stage.
@@ -68,11 +71,27 @@ public class CesServicesManager implements ReloadableServicesManager {
     public boolean matchesExistingService(final Service service) {
         return findServiceBy(service) != null;
     }
+    
+    @Override
+    public RegisteredService findServiceBy(String serviceId) {
+        return findServiceBy(Long.parseLong(serviceId));
+    }
 
     @Override
-    public void reload() {
-        logger.info("Cas wants to reload registered services.");
+    public Collection<RegisteredService> findServiceBy(Predicate<RegisteredService> predicate) {
+        return Collections2.filter(getAllServices(), predicate);
     }
+
+    @Override
+    public boolean matchesExistingService(String service) {
+        return findServiceBy(service) != null;
+    }
+
+    @Override
+    public void load() {
+        logger.info("Cas wants to load registered services.");
+    }
+
 
     @Override
     public RegisteredService save(final RegisteredService registeredService) {

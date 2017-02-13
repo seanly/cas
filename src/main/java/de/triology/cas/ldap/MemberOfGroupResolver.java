@@ -8,7 +8,7 @@ package de.triology.cas.ldap;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.jasig.cas.authentication.principal.Principal;
+import org.apereo.cas.authentication.principal.Principal;
 import org.ldaptive.LdapAttribute;
 import org.ldaptive.LdapEntry;
 import org.slf4j.Logger;

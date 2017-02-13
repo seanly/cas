@@ -1,13 +1,16 @@
 package de.triology.cas.services;
 
-import org.jasig.cas.services.RegexRegisteredService;
-import org.jasig.cas.services.RegisteredService;
+import org.apereo.cas.services.RegexRegisteredService;
+import org.apereo.cas.services.RegisteredService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.apereo.cas.services.RegexMatchingRegisteredServiceProxyPolicy;
+import org.apereo.cas.services.RegisteredServiceProxyPolicy;
+import org.apereo.cas.services.ReturnAllAttributeReleasePolicy;
 
 /**
  * An abstract class that encapsulates the stages {@link CesServiceManager} operates in.
@@ -58,10 +61,10 @@ abstract class CesServicesManagerStage {
         RegexRegisteredService service = new RegexRegisteredService();
         service.setName(name);
         service.setServiceId(serviceId);
-        service.setAllowedToProxy(true);
+        service.setProxyPolicy(new RegexMatchingRegisteredServiceProxyPolicy(".*"));
         // TODO Why set this to the initial ID value of the Service? --> Same order for each service!
         service.setEvaluationOrder((int) service.getId());
-        service.setAllowedAttributes(allowedAttributes);
+        service.setAttributeReleasePolicy(new ReturnAllAttributeReleasePolicy());
         service.setId(createId());
         registeredServices.put(service.getId(), service);
     }

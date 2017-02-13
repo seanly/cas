@@ -1,19 +1,68 @@
-#![Cloudogu logo](https://cloudogu.com/images/logo.png)
-# CAS
-https://cloudogu.com
+CAS Overlay Template
+============================
 
-This repository consists of the CAS server. CAS stands for Central Authentication Service. It provides Single Sign On either via Legacy LDAP-connection or via own user management system.
+Generic CAS WAR overlay to exercise the latest versions of CAS. This overlay could be freely used as a starting template for local CAS war overlays. The CAS services management overlay is available [here](https://github.com/apereo/cas-services-management-overlay).
 
----
-### What is Cloudogu?
-Cloudogu is an open platform, which lets you choose how and where your team creates great software. Each service or tool is delivered as a [Dōgu](https://translate.google.com/?text=D%26%23x014d%3Bgu#ja/en/%E9%81%93%E5%85%B7), a Docker container, that can be easily integrated in your environment just by pulling it from our registry. We have a growing number of ready-to-use Dōgus, e.g. SCM-Manager, Jenkins, Nexus, SonarQube, Redmine and many more. Every Dōgu can be tailored to your specific needs. You can even bring along your own Dōgus! Take advantage of a central authentication service, a dynamic navigation, that lets you easily switch between the web UIs and a smart configuration magic, which automatically detects and responds to dependencies between Dōgus. Cloudogu is open source and it runs either on-premise or in the cloud. Cloudogu is developed by Cloudogu GmbH under [MIT License](https://cloudogu.com/license.html) and it runs either on-premise or in the cloud.
+# Versions
 
-### How to get in touch?
-Want to talk to the Cloudogu team? Need help or support? There are several ways to get in touch with us:
+```xml
+<cas.version>5.0.x</cas.version>
+```
 
-* [Website](https://cloudogu.com)
-* [Mailing list](https://groups.google.com/forum/#!forum/cloudogu)
-* [Email hello@cloudogu.com](mailto:hello@cloudogu.com)
+# Requirements
+* JDK 1.8+
 
----
-&copy; 2016 Cloudogu GmbH - MADE WITH :heart: FOR DEV ADDICTS. [Legal notice / Impressum](https://cloudogu.com/imprint.html)
+# Configuration
+
+The `etc` directory contains the configuration files and directories that need to be copied to `/etc/cas/config`.
+
+# Build
+
+To see what commands are available to the build script, run:
+
+```bash
+./build.sh help
+```
+
+To package the final web application, run:
+
+```bash
+./build.sh package
+```
+
+To update `SNAPSHOT` versions run:
+
+```bash
+./build.sh package -U
+```
+
+# Deployment
+
+- Create a keystore file `thekeystore` under `/etc/cas`. Use the password `changeit` for both the keystore and the key/certificate entries.
+- Ensure the keystore is loaded up with keys and certificates of the server.
+
+On a successful deployment via the following methods, CAS will be available at:
+
+* `http://cas.server.name:8080/cas`
+* `https://cas.server.name:8443/cas`
+
+## Executable WAR
+
+Run the CAS web application as an executable WAR.
+
+```bash
+./build.sh run
+```
+
+## Spring Boot
+
+Run the CAS web application as an executable WAR via Spring Boot. This is most useful during development and testing.
+
+```bash
+./build.sh bootrun
+```
+
+## External
+
+Deploy resultant `target/cas.war`  to a servlet container of choice.
+

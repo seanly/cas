@@ -9,9 +9,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import javax.security.auth.login.LoginException;
-import org.jasig.cas.authentication.LdapAuthenticationHandler;
-import org.jasig.cas.authentication.principal.Principal;
-import org.jasig.cas.authentication.principal.SimplePrincipal;
+import org.apereo.cas.authentication.LdapAuthenticationHandler;
+import org.apereo.cas.authentication.principal.Principal;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.auth.Authenticator;
 
@@ -77,6 +76,6 @@ public final class GroupAwareLdapAuthenticationHandler extends LdapAuthenticatio
     logger.debug("adding groups {} to user attributes", groups);
     attributes.put(groupAttribute, groups);
     
-    return new SimplePrincipal(principal.getId(), attributes);
+    return new SimplePrincipalWithGroups(principal.getId(), attributes);
   }
 }

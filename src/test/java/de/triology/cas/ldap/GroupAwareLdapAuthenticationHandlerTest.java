@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.jasig.cas.authentication.principal.Principal;
+import org.apereo.cas.authentication.principal.Principal;
 import org.junit.runner.RunWith;
 import org.ldaptive.LdapEntry;
 import org.ldaptive.auth.Authenticator;

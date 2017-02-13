@@ -46,17 +46,17 @@ public class ConnectionAwareAuthenticator extends Authenticator {
     
     @Override
     protected LdapEntry resolveEntry(
-        AuthenticationRequest request, AuthenticationHandlerResponse response, AuthenticationCriteria criteria
+        AuthenticationCriteria criteria, AuthenticationHandlerResponse response
     ) throws LdapException {
         LdapEntry entry = null;
         
         if (isResolvingAttributesRequired(response)) {
-            EntryResolver resolver = getEntryResolver(request);
-            entry = resolveEntry(response, criteria, resolver);
+            EntryResolver resolver = getEntryResolver(criteria.getAuthenticationRequest());
+            entry = resolveEntry(criteria, response, resolver);
         }
         
         if (entry == null) {
-            entry = resolveEntry(response, criteria, NOOP_RESOLVER);
+            entry = resolveEntry(criteria, response, NOOP_RESOLVER);
         }
         return entry;
     }
@@ -78,10 +78,13 @@ public class ConnectionAwareAuthenticator extends Authenticator {
     }
     
     private LdapEntry resolveEntry(
-            AuthenticationHandlerResponse response, AuthenticationCriteria criteria, EntryResolver resolver
+            AuthenticationCriteria criteria, AuthenticationHandlerResponse response, EntryResolver resolver
     ) throws LdapException {
         
-        LdapEntry entry = resolver.resolve(getEntryResolverConnection(response), criteria);
+        // TODO check
+        LdapEntry entry = resolver.resolve(criteria, new AuthenticationHandlerResponse(
+            response.getResult(), response.getResultCode(), getEntryResolverConnection(response)
+        ));
         logger.trace("resolved entry={} with resolver={}", entry, resolver);
         return entry;
     }

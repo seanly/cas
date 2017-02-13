@@ -14,8 +14,7 @@ import javax.naming.directory.SearchControls;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.StringUtils;
 
-import org.jasig.cas.authentication.principal.Principal;
-import org.jasig.cas.util.LdapUtils;
+import org.apereo.cas.authentication.principal.Principal;
 
 import org.ldaptive.Connection;
 import org.ldaptive.ConnectionFactory;
@@ -142,32 +141,28 @@ public class MemberGroupResolver implements GroupResolver {
   }
 
   private Set<String> resolveGroupsByLdapFilter(SearchFilter filter) {
-    Connection connection = null;
     try {
-      try {
-        connection = this.connectionFactory.getConnection();
+      try (Connection connection = this.connectionFactory.getConnection()) {
+              
+        final Response<SearchResult> response;
+        try {
+          response = new SearchOperation(connection).execute(createRequest(filter));
+        }
+        catch (final LdapException e) {
+          throw new RuntimeException("Failed executing LDAP query " + filter, e);
+        }
+        final SearchResult result = response.getResult();
+        final Set<String> groups = new HashSet<>();
+        for (final LdapEntry entry : result.getEntries()) {
+          String group = extractGroupName(entry);
+          LOG.trace("added group {} to attribute map", group);
+          groups.add(group);
+        }
+        return groups;
       }
-      catch (final LdapException e) {
-        throw new RuntimeException("Failed getting LDAP connection", e);
-      }
-      final Response<SearchResult> response;
-      try {
-        response = new SearchOperation(connection).execute(createRequest(filter));
-      }
-      catch (final LdapException e) {
-        throw new RuntimeException("Failed executing LDAP query " + filter, e);
-      }
-      final SearchResult result = response.getResult();
-      final Set<String> groups = new HashSet<>();
-      for (final LdapEntry entry : result.getEntries()) {
-        String group = extractGroupName(entry);
-        LOG.trace("added group {} to attribute map", group);
-        groups.add(group);
-      }
-      return groups;
     }
-    finally {
-      LdapUtils.closeConnection(connection);
+    catch (final LdapException e) {
+        throw new RuntimeException("Failed getting LDAP connection", e);
     }
   }
 
@@ -186,7 +181,8 @@ public class MemberGroupResolver implements GroupResolver {
     request.setReturnAttributes(new String[]{nameAttribute});
     request.setSearchScope(this.searchScope);
     request.setSizeLimit(this.searchControls.getCountLimit());
-    request.setTimeLimit(this.searchControls.getTimeLimit());
+    // TODO
+    // request.setTimeLimit(this.searchControls.getTimeLimit());
     return request;
   }
 
